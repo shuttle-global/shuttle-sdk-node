@@ -1,0 +1,29 @@
+{
+  "name": "@shuttleglobal/shuttle-sdk-node",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node ./shuttle.js",
+    "test": "qunit -c shuttle.js -t test/shuttle.js"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  },
+  "devDependencies": {},
+  "description": "Shuttle Node.js SDK",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shuttle-global/shuttle-sdk-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shuttle-global/shuttle-sdk-node/issues"
+  },
+  "homepage": "https://github.com/shuttle-global/shuttle-sdk-node#readme",
+  "main": "shuttle.js",
+  "directories": {
+    "test": "test"
+  },
+  "author": "Shuttle",
+  "license": "ISC"
+}
