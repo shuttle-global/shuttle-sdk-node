@@ -62,37 +62,31 @@ class Shuttle {
 		return this._request("DELETE", instance_key, endpoint);
 	}
 
-	setupButton (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	setupButton (options) {
 		return new Buffer(JSON.stringify(options)).toString("base64");
 	}
 
-	setupSignature (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	setupSignature (options) {
 		return this._sign("doSetup", options);
 	}
 
-	setupUrl (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	setupUrl (options) {
 		return `${this.host}/c/${options.channel_key || "setup"}/#/api/setup/${new Buffer(JSON.stringify(options)).toString("base64")}/${new Buffer(JSON.stringify({ signature: this._sign("doSetup", options) })).toString("base64")}`;
 	}
 
-	getSetup (instance_key) {
+	getSetupPayments (instance_key) {
 		return this.apiGet(instance_key, `/setup/payments`);
 	}
 
-	paymentButton (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	paymentButton (options) {
 		return new Buffer(JSON.stringify(options)).toString("base64");
 	}
  
- 	paymentSignature (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+ 	paymentSignature (options) {
 		return this._sign("doPayment", options);
 	}
 
-	paymentUrl (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	paymentUrl (options) {
 		return `${this.host}/c/${options.channel_key || "web"}/api/doPayment?q=${new Buffer(JSON.stringify(options)).toString("base64")}&signature=${this._sign("doPayment", options)}`;
 	}
 
