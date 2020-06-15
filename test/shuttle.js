@@ -21,8 +21,10 @@ _.map(tests.setup, (test, i) => {
 	});
 
 	QUnit.test("setupUrl" + i, function (assert) {
-		var value = payments.setupUrl(_.defaults({ instance_key: test.instance_key }, test.options));
-		assert.equal(value.replace(/\/[^/]*$/, ""), test.url.replace(/\/[^/]*$/, ""), "encoded correctly");
+		return payments.setupUrl(test.instance_key, { setup: { ...test.options, instance_key: test.instance_key } })
+		.then((setupUrl) => {
+			assert.ok(_.startsWith((setupUrl || {}).url, test.url), "encoded correctly");
+		});
 	});
 
 	QUnit.test("getSetup" + i, function (assert) {

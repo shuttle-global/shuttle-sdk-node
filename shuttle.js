@@ -76,8 +76,8 @@ class Shuttle {
 		return this._sign("doSetup", options);
 	}
 
-	setupUrl (options) {
-		return `${this.host}/c/${options.channel_key || "setup"}/#/api/setup/${new Buffer(JSON.stringify(options)).toString("base64")}/${new Buffer(JSON.stringify({ signature: this._sign("doSetup", options) })).toString("base64")}`;
+	setupUrl (instance_key, options) {
+		return this.apiPost(instance_key, `/setup_url`, options);
 	}
 
 	getSetupPayments (instance_key) {

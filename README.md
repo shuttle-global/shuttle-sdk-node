@@ -60,13 +60,44 @@ var setup_encoded_string = shuttle.setupButton(options);
 var signature_encoded_string = shuttle.setupSignature(options);
 
 var html_button = '<button data-shuttle-setup="' + setup_encoded_string + '" data-shuttle-signature="' + signature_encoded_string + '">Setup Payments</button>'
-
-// OR you can create a setup URL to redirect the user to
-
-var setup_url = payments.setupUrl(options);
 ```
-
 Please refer [here](https://api.shuttleglobal.com/?version=latest#7027a5f1-8ae3-46fe-80e6-8d206a62dad1) for available options.
+
+```
+var Shuttle = require ("@shuttleglobal/shuttle-sdk-node");
+
+var shuttle = new Shuttle({
+	shared_key: "your shared key",
+	secret_key: "your secret key"
+});
+
+var instance_key = "ABC1234";
+
+var options = {
+	setup: {
+		company_name: "Jim's Shoe Shop",
+		company_country: "US",
+		contact_name: "Jim Doe",
+		contact_phone: "+1614123456",
+		contact_email: "jim@gmail.com"
+	}
+};
+
+var setup_url_promise = shuttle.setupUrl(instance_key, options)
+.then((result) => {
+	// On Success
+	console.log("Result: " + JSON.stringify(result));
+}).catch((err) => {
+	// On Error
+	console.log("Result: " + JSON.stringify(result));
+});
+```
+```
+Result:
+{
+	"url": "https://payments.testwithbolt.com/c/setup/#/api/setup/eyJ4Y29tcGFueV9uYW1lIjoidGVzdCBzYWFzIiwieGNvbXBhbnlfY291bnRyeSI6IkdCIiwieGNvbnRhY3RfbmFtZSI6IkpvaG4gRG9lIiwieGNvbnRhY3RfcGhvbmUiOiIrNDQwMDAwMDAwMDAiLCJ4Y29udGFjdF9lbWFpbCI6ImpvaG5AZW1haWwuY29tIiwiaW5zdGFuY2VLZXkiOiIxMjM0NSIsImJvbHRJbnRlZ3JhdGlvbktleSI6IjEzMDdfMTcyMyIsImJvbHRJbnRlZ3JhdGlvbk5hbWUiOiJBbm4gVGVzdC1TQU5EQk9YIiwiYWNjZXB0ZWRUZXJtc0FuZENvbmRpdGlvbnMiOnRydWUsInNlc3Npb25LZXkiOiI0MDlkOTQyMWFiMTQ0YmUxOGFkNWEwYWVkNGU0OTVlYiIsInNlc3Npb25LZXlJc1VzZXIiOnRydWUsImNsaWVudEtleSI6IjI1ODQiLCJjbGllbnRTZXNzaW9uIjoiZDQwYWVlNDllMTNkOGQ0OWEyZDMwZDdlZmFlMzRmOGQifQ%3D%3D/e30%3D"
+}
+```
 
 First time users will be required to supply all the above fields during account creation, any fields not passed in the "options" will be prompted to the user.
 
@@ -211,7 +242,7 @@ var payment_url_promise = shuttle.paymentUrl(instance_key, options)
 ```
 Result:
 {
-	"url": "https://payments.123456789.testwithbolt.com/c/web/#/api/payment/eyJob3N0IjoiaHR0cHM6Ly9wYXltZW50cy53aXRoYm9sdC5jb20iLCJub25jZSI6IlRFU1QiLCJjaGFubmVsS2V5Ijoid2ViIiwiY3JtIjp7ImFkZHJlc3MiOnsiY291bnRyeSI6IkdCIiwibGluZTEiOiIxIEhpZ2ggU3QiLCJsaW5lNCI6IkxvbmRvbiIsImxpbmU1IjoiVzEwIDZSVSJ9LCJjcm1rZXkiOiJJRDEiLCJmaXJzdG5hbWUiOiJKYW1lcyIsImxhc3RuYW1lIjoiQm9lciIsImNvbXBhbnkiOiJKaW5reSdzIExvbGxpZSBTaG9wIiwiZW1haWwiOiJqYW1lc0BqaW5raWVzLmNvbSIsInBob25lIjoiMDcxMjM0NTY3OCJ9LCJpbnN0YW5jZUtleSI6IjEyMzEyMzEyMyIsImFsdEtleSI6IjEyMzQiLCJjdXJyZW5jeSI6IkdCUCIsImFtb3VudCI6MSwib3JkZXJEZXNjIjoiQWJvdXQgdGhlIHBheW1lbnQiLCJpc0N1c3RvbWVyUHJlc2VudCI6ZmFsc2UsImlzU3RhZmZQcmVzZW50Ijp0cnVlLCJkaXNhYmxlTXlEZXRhaWxzIjoiVFJVRSIsInNlc3Npb25LZXkiOiI0NmIxMjkzMTZiZWQ2YmIxNWU1ZWUwMTJjNDQxMzAwOCJ9"
+	"url": "https://payments-123456789.testwithbolt.com/c/web/#/api/payment/eyJob3N0IjoiaHR0cHM6Ly9wYXltZW50cy53aXRoYm9sdC5jb20iLCJub25jZSI6IlRFU1QiLCJjaGFubmVsS2V5Ijoid2ViIiwiY3JtIjp7ImFkZHJlc3MiOnsiY291bnRyeSI6IkdCIiwibGluZTEiOiIxIEhpZ2ggU3QiLCJsaW5lNCI6IkxvbmRvbiIsImxpbmU1IjoiVzEwIDZSVSJ9LCJjcm1rZXkiOiJJRDEiLCJmaXJzdG5hbWUiOiJKYW1lcyIsImxhc3RuYW1lIjoiQm9lciIsImNvbXBhbnkiOiJKaW5reSdzIExvbGxpZSBTaG9wIiwiZW1haWwiOiJqYW1lc0BqaW5raWVzLmNvbSIsInBob25lIjoiMDcxMjM0NTY3OCJ9LCJpbnN0YW5jZUtleSI6IjEyMzEyMzEyMyIsImFsdEtleSI6IjEyMzQiLCJjdXJyZW5jeSI6IkdCUCIsImFtb3VudCI6MSwib3JkZXJEZXNjIjoiQWJvdXQgdGhlIHBheW1lbnQiLCJpc0N1c3RvbWVyUHJlc2VudCI6ZmFsc2UsImlzU3RhZmZQcmVzZW50Ijp0cnVlLCJkaXNhYmxlTXlEZXRhaWxzIjoiVFJVRSIsInNlc3Npb25LZXkiOiI0NmIxMjkzMTZiZWQ2YmIxNWU1ZWUwMTJjNDQxMzAwOCJ9"
 }
 ```
  
