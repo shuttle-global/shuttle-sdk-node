@@ -46,8 +46,14 @@ class Shuttle {
 		});
 	}
 
-	apiGet (instance_key, endpoint) {
-		return this._request("GET", instance_key, endpoint);
+	_serialiseRequestQuery(options) {
+        return options ? _.reduce(options, (str, val, key) => {
+            return `${str}${(str ? "&" : "")}${key}=${val}`;
+        }, "") : "";
+    }
+
+	apiGet (instance_key, endpoint, options) {
+		return this._request("GET", instance_key, endpoint + (options ? (endpoint.indexOf("?") !== -1 ? "&" : "?") + this._serialiseRequestQuery(options) : ""));
 	}
 
 	apiPost (instance_key, endpoint, body) {
@@ -86,38 +92,35 @@ class Shuttle {
 		return this._sign("doPayment", options);
 	}
 
-	paymentUrl (options) {
-		return `${this.host}/c/${options.channel_key || "web"}/api/doPayment?q=${new Buffer(JSON.stringify(options)).toString("base64")}&signature=${this._sign("doPayment", options)}`;
+	paymentUrl (instance_key, options) {
+		return this.apiPost(instance_key, `/payment_url`, options);
 	}
 
 	doPayment(instance_key, payment) {
 		return this.apiPost(instance_key, `/payments`, payment);
 	}
 
-	getPayment(instance_key, payment_key) {
-		return this.apiGet(instance_key, `/payments/${payment_key}`);
+	getPayment(instance_key, payment_key, options) {
+		return this.apiGet(instance_key, `/payments/${payment_key}`, options);
 	}
 
 	doRefund(instance_key, payment_key, refund) {
 		return this.apiPost(instance_key, `/payments/${payment_key}/refund`, refund);
 	}
 
-	getRefund(instance_key, refund_key) {
-		return this.apiGet(instance_key, `/refunds/${refund_key}`);
+	getRefund(instance_key, refund_key, options) {
+		return this.apiGet(instance_key, `/refunds/${refund_key}`, options);
 	}
 	
-	selectTokenButton (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	selectTokenButton (options) {
 		return new Buffer(JSON.stringify(options)).toString("base64");
 	}
  
-	selectTokenSignature (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	selectTokenSignature (options) {
 		return this._sign("selectToken", options);
 	}
 
-	selectTokenUrl (instance_key, options) {
-		options = _.defaults({ instance_key: instance_key }, options);
+	selectTokenUrl (options) {
 		return `${this.host}/c/${options.channel_key || "web"}/api/selectToken?q=${new Buffer(JSON.stringify(options)).toString("base64")}&signature=${this._sign("selectToken", options)}`;
 	}
 

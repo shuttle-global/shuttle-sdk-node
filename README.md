@@ -158,13 +158,64 @@ var payment_encoded_string = shuttle.paymentButton(options);
 var signature_encoded_string = shuttle.paymentSignature(options);
 
 var html_button = '<button data-shuttle-payment="' + setup_encoded_string + '" data-shuttle-signature="' + signature_encoded_string + '">Pay</button>'
+```
+Please refer [here](https://api.shuttleglobal.com/?version=latest#9dd09218-5f9c-4e04-a19f-105607a75c8a) for options available.
 
-// OR you can create a payment URL to redirect the user to
 
-var payment_url = shuttle.paymentUrl(options);
+OR you can create a payment URL to redirect the user to
+
+```
+var Shuttle = require ("@shuttleglobal/shuttle-sdk-node");
+
+var shuttle = new Shuttle({
+	shared_key: "your shared key",
+	secret_key: "your secret key"
+});
+
+var instance_key = "ABC1234";
+
+var options = {
+	payment: {
+		currency: "GBP",
+		amount: 100,
+		alt_key: "1234",
+		description: "About the payment",
+		source: "moto",
+		account: {
+			alt_key: "eyJob3N0IjoiaHR0cHM6Ly9wYXltZW50cy53aXRoYm9sdC5jb20iLCJub25jZSI6IlRFU1QiLCJjaGFubmVsS2V5Ijoid2ViIiwiImluc3RhbmNlS2V5IjoiQUJDMTIzNCIsImFsdEtleSI6IjEyMzQiLCJjdXJyZW5jeSI6IkdCUCIsImFtb3VudCI6MSwib3JkZXJEZXNjIjoiQWJvdXQgdGhlIHBheW1lbnQiLCJpc0N1c3RvbWVyUHJlc2VudCI6ZmFsc2UsImlzU3RhZmZQcmVzZW50Ijp0cnVlLCJkaXNhYmxlTXlEZXRhaWxzIjoiVFJVRSJ9",
+			first_name: "James",
+			last_name: "Boer",
+			company: "Jinky's Lollie Shop",
+			email: "james@jinkies.com",
+			phone: "0712345678",
+			address: {
+				line1: "1 High St",
+				line4: "London",
+				line5: "W10 6RU",
+				country: "GB"
+			}
+		},
+		success_url: "https://jinkies.com/receipt"
+	}
+};
+
+var payment_url_promise = shuttle.paymentUrl(instance_key, options)
+.then((result) => {
+	// On Success
+	console.log("Result: " + JSON.stringify(result));
+}).catch((err) => {
+	// On Error
+	console.log("Result: " + JSON.stringify(result));
+});
+```
+```
+Result:
+{
+	"url": "https://payments.123456789.testwithbolt.com/c/web/#/api/payment/eyJob3N0IjoiaHR0cHM6Ly9wYXltZW50cy53aXRoYm9sdC5jb20iLCJub25jZSI6IlRFU1QiLCJjaGFubmVsS2V5Ijoid2ViIiwiY3JtIjp7ImFkZHJlc3MiOnsiY291bnRyeSI6IkdCIiwibGluZTEiOiIxIEhpZ2ggU3QiLCJsaW5lNCI6IkxvbmRvbiIsImxpbmU1IjoiVzEwIDZSVSJ9LCJjcm1rZXkiOiJJRDEiLCJmaXJzdG5hbWUiOiJKYW1lcyIsImxhc3RuYW1lIjoiQm9lciIsImNvbXBhbnkiOiJKaW5reSdzIExvbGxpZSBTaG9wIiwiZW1haWwiOiJqYW1lc0BqaW5raWVzLmNvbSIsInBob25lIjoiMDcxMjM0NTY3OCJ9LCJpbnN0YW5jZUtleSI6IjEyMzEyMzEyMyIsImFsdEtleSI6IjEyMzQiLCJjdXJyZW5jeSI6IkdCUCIsImFtb3VudCI6MSwib3JkZXJEZXNjIjoiQWJvdXQgdGhlIHBheW1lbnQiLCJpc0N1c3RvbWVyUHJlc2VudCI6ZmFsc2UsImlzU3RhZmZQcmVzZW50Ijp0cnVlLCJkaXNhYmxlTXlEZXRhaWxzIjoiVFJVRSIsInNlc3Npb25LZXkiOiI0NmIxMjkzMTZiZWQ2YmIxNWU1ZWUwMTJjNDQxMzAwOCJ9"
+}
 ```
  
-Please refer [here](https://api.shuttleglobal.com/?version=latest#9dd09218-5f9c-4e04-a19f-105607a75c8a) for options available.
+Please refer [here](https://api.shuttleglobal.com/?version=latest#2ede352b-e4e8-494b-9d24-f8d8f1fd2b83) for options available, and the data returned.
 
 
 ### API - Create a Payment

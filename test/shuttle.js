@@ -11,23 +11,23 @@ var payments = new Shuttle(tests.options);
 
 _.map(tests.setup, (test, i) => {
 	QUnit.test("setupButton" + i, function (assert) {
-		var value = payments.setupButton(test.instance_key, test.options);
+		var value = payments.setupButton(_.defaults({ instance_key: test.instance_key }, test.options));
 		assert.equal(value, test.button, "encoded correctly");	
 	});
 
 	QUnit.test("setupSignature" + i, function (assert) {
-		var value = payments.setupSignature(test.instance_key, _.defaults({_timestamp: test.signature_timestamp}, test.options));
+		var value = payments.setupSignature(_.defaults({ instance_key: test.instance_key, _timestamp: test.signature_timestamp }, test.options));
 		assert.equal(value, test.signature, "encoded correctly");	
 	});
 
 	QUnit.test("setupUrl" + i, function (assert) {
-		var value = payments.setupUrl(test.instance_key, test.options);
+		var value = payments.setupUrl(_.defaults({ instance_key: test.instance_key }, test.options));
 		assert.equal(value.replace(/\/[^/]*$/, ""), test.url.replace(/\/[^/]*$/, ""), "encoded correctly");
 	});
 
 	QUnit.test("getSetup" + i, function (assert) {
 		assert.expect(1);
-		return payments.getSetup(test.instance_key)
+		return payments.getSetupPayments(test.instance_key)
 		.then((value) => {
 			// console.log("Output: " + JSON.stringify(value));
 			assert.ok(value.payments_ready, "setup payments_ready");
@@ -37,18 +37,20 @@ _.map(tests.setup, (test, i) => {
 
 _.map(tests.payment, (test, i) => {
 	QUnit.test("paymentButton" + i, function (assert) {
-		var value = payments.paymentButton(test.instance_key, test.options);
+		var value = payments.paymentButton(_.defaults({ instance_key: test.instance_key }, test.options));
 		assert.equal(value, test.button, "encoded correctly");	
 	});
 
 	QUnit.test("paymentSignature" + i, function (assert) {
-		var value = payments.paymentSignature(test.instance_key, _.defaults({_timestamp: test.signature_timestamp}, test.options));
+		var value = payments.paymentSignature(_.defaults({ instance_key: test.instance_key, _timestamp: test.signature_timestamp }, test.options));
 		assert.equal(value, test.signature, "encoded correctly");	
 	});
 
 	QUnit.test("paymentUrl" + i, function (assert) {
-		var value = payments.paymentUrl(test.instance_key, test.options);
-		assert.equal(value.replace(/signature.*/, ""), test.url.replace(/signature.*/, ""), "encoded correctly");	
+		return payments.paymentUrl(test.instance_key, { payment: test.options })
+		.then((paymentUrl) => {
+			assert.ok(_.startsWith((paymentUrl || {}).url, test.url), "encoded correctly");
+		});
 	});
 
 	QUnit.test("doPayment" + i, function (assert) {
