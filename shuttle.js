@@ -30,7 +30,7 @@ class Shuttle {
 	_request(method, instance_key, endpoint, body) {
 		return rp({
 			method: method,
-            uri: `${this.host}/c/api/instances/${instance_key}${endpoint}`,
+            uri: `${this.host}/c/api` + (instance_key ? `/instances/${instance_key}` : "" )+ endpoint,
             auth: {
                 "user": this.secret_key
             },
@@ -40,6 +40,9 @@ class Shuttle {
             }],
 			json: body
 		}).then((response) => {
+			if(method == "DELETE") {
+				return;
+			}
 			return _.isString(response) ? JSON.parse(response) : response;
 		}).catch((err) => {
 			this._handleError(err);
@@ -69,19 +72,51 @@ class Shuttle {
 	}
 
 	setupButton (options) {
+		console.warn("Deprecated 20200601");
 		return new Buffer(JSON.stringify(options)).toString("base64");
 	}
 
 	setupSignature (options) {
+		console.warn("Deprecated 20200601");
 		return this._sign("doSetup", options);
 	}
 
 	setupUrl (instance_key, options) {
-		return this.apiPost(instance_key, `/setup_url`, options);
+		return this.apiPost(instance_key, `/deep_links`, {
+			"deep_link": {
+				"type": "gateway-setup",
+				"context": options,
+				"user": options.user,
+				"session": {
+					"teams": ["ADMIN"]
+				}
+			}
+		});
 	}
 
 	getSetupPayments (instance_key) {
+		console.warn("Deprecated 20200601");
 		return this.apiGet(instance_key, `/setup/payments`);
+	}
+
+	createInstance(options) {
+		return this.apiPost(null, '/instances', options);
+	}
+	
+	updateInstance(instance_key, options) {
+		return this.apiPut(instance_key, '', options);
+	}
+	
+	deleteInstance(instance_key) {
+		return this.apiDelete(instance_key, '');
+	}
+	
+	getInstance(instance_key) {
+		return this.apiGet(instance_key, '');
+	}
+	
+	deeplink(options) {
+		return this.apiPost(instance_key, `/deep_links`, options);
 	}
 
 	paymentButton (options) {
